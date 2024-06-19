@@ -6,7 +6,7 @@
   vars_prompt: #by putting we are securing password not to show in the code
   - name: mysql_root_password
     prompt: please enter MySQL root password
-    private: no 
+    private: no #im setting it no to seethe password im giving for the root passoword ; it shoud yes not show the password in the terminal
   tasks:
   - name: Install MySQL Server
     ansible.builtin.dnf:
@@ -56,6 +56,8 @@
     when: mysql_connection_output.failed is true # don't give {{ }} in when condition 
     #by using the when condition from the output - msg: "Output: {{mysql_connection_output}} " we are saying when its true run this command; if it fails
     #this command will not run
+    #check output-3 for the successful setting up root password
+    #check output-4 for the ignoring the root password running the same command again.
 
 #We have received an error 1st time when we run it saying that 
 #"msg": "A MySQL module is required: for Python 2.7 either PyMySQL, or MySQL-python, or for Python 3.X mysqlclient or PyMySQL.
@@ -125,3 +127,69 @@
 
 #   PLAY RECAP ************************************************************************************************************************************************************************************
 #   db.mohansaivenna.cloud     : ok=6    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=1 
+
+# output-3
+
+#   [ ec2-user@ip-172-31-29-113 ~/my-website-using-ansible ]$ ansible-playbook -i inventory -e ansible_user=ec2-user -e ansible_password=DevOps321 database.yaml
+#   please enter MySQL root password: ExpenseApp@1
+
+#   PLAY [configure DB server] ********************************************************************************************************************************************************************
+
+#   TASK [Gathering Facts] ************************************************************************************************************************************************************************
+#   ok: [db.mohansaivenna.cloud]
+
+#   TASK [Install MySQL Server] *******************************************************************************************************************************************************************
+#   ok: [db.mohansaivenna.cloud]
+
+#   TASK [Start and Enable MySQL server] **********************************************************************************************************************************************************
+#   ok: [db.mohansaivenna.cloud]
+
+#   TASK [install python mysql dependencies] ******************************************************************************************************************************************************
+#   ok: [db.mohansaivenna.cloud]
+
+#   TASK [check DB connection] ********************************************************************************************************************************************************************
+#   fatal: [db.mohansaivenna.cloud]: FAILED! => {"changed": false, "msg": "unable to connect to database using pymysql 1.1.1, check login_user and login_password are correct or /root/.my.cnf has the credentials. Exception message: (1130, \"Host 'ip-172-31-82-168.ec2.internal' is not allowed to connect to this MySQL server\")"}
+#   ...ignoring
+
+#   TASK [print output] ***************************************************************************************************************************************************************************
+#   ok: [db.mohansaivenna.cloud] => {
+#       "msg": "Output: {'failed': True, 'msg': 'unable to connect to database using pymysql 1.1.1, check login_user and login_password are correct or /root/.my.cnf has the credentials. Exception message: (1130, \"Host \\'ip-172-31-82-168.ec2.internal\\' is not allowed to connect to this MySQL server\")', 'changed': False} "
+#   }
+
+#   TASK [setup root password] ********************************************************************************************************************************************************************
+#   changed: [db.mohansaivenna.cloud]
+
+#   PLAY RECAP ************************************************************************************************************************************************************************************
+#   db.mohansaivenna.cloud     : ok=7    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=1   
+
+# output-4:
+#   [ ec2-user@ip-172-31-29-113 ~/my-website-using-ansible ]$ ansible-playbook -i inventory -e ansible_user=ec2-user -e ansible_password=DevOps321 database.yaml
+#   please enter MySQL root password: ExpenseApp@1
+
+#   PLAY [configure DB server] ********************************************************************************************************************************************************************
+
+#   TASK [Gathering Facts] ************************************************************************************************************************************************************************
+#   ok: [db.mohansaivenna.cloud]
+
+#   TASK [Install MySQL Server] *******************************************************************************************************************************************************************
+#   ok: [db.mohansaivenna.cloud]
+
+#   TASK [Start and Enable MySQL server] **********************************************************************************************************************************************************
+#   ok: [db.mohansaivenna.cloud]
+
+#   TASK [install python mysql dependencies] ******************************************************************************************************************************************************
+#   ok: [db.mohansaivenna.cloud]
+
+#   TASK [check DB connection] ********************************************************************************************************************************************************************
+#   ok: [db.mohansaivenna.cloud]
+
+#   TASK [print output] ***************************************************************************************************************************************************************************
+#   ok: [db.mohansaivenna.cloud] => {
+#       "msg": "Output: {'changed': False, 'connector_name': 'pymysql', 'connector_version': '1.1.1', 'version': {'major': 8, 'minor': 0, 'release': 36, 'suffix': '', 'full': '8.0.36'}, 'failed': False} "
+#   }
+
+#   TASK [setup root password] ********************************************************************************************************************************************************************
+#   skipping: [db.mohansaivenna.cloud]
+
+#   PLAY RECAP ************************************************************************************************************************************************************************************
+#   db.mohansaivenna.cloud     : ok=6    changed=0    unreachable=0    failed=0    skipped=1    rescued=0    ignored=0
