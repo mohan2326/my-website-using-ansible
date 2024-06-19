@@ -58,14 +58,24 @@
     #this command will not run
     #check output-3 for the successful setting up root password
     #check output-4 for the ignoring the root password running the same command again.
-
+  
+  # validating the sql port is 
   - name: Checking the SQL port
     ansible.builtin.command: "netstat -lntp | grep 3306"
     register: netstat_output
 
   - name: Print netstat output
     ansible.builtin.debug:
-        msg: "Output: {{ netstat_output.stdout_lines }}"
+      msg: "Output: {{ netstat_output.stdout_lines }}"
+
+  #validating the MySQL login and show databases
+  - name: MySQL login and show databases
+    ansible.builtin.command: "mysql -h db.mohansaivenna.cloud -uroot -p${mysql_root_password}  -e 'show databases;'"
+    register: mysql_showdatabases_output
+  
+  - name: Print Showdatabase output
+    ansible.builtin.debug:
+      msg: "Output: {{ mysql_showdatabases_output }}"
 
 #We have received an error 1st time when we run it saying that 
 #"msg": "A MySQL module is required: for Python 2.7 either PyMySQL, or MySQL-python, or for Python 3.X mysqlclient or PyMySQL.
