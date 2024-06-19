@@ -2,8 +2,12 @@
   become: yes
   hosts: backend
   vars:
-    login_host: 
-    login_password:
+    login_host: db.mohansaivenna.cloud
+    #login_password:
+  vars_prompt: #by putting we are securing password not to show in the code
+  - name: mysql_root_password
+    prompt: please enter MySQL root password
+    private: no 
   tasks:
   - name: disable default nodejs
     ansible.builtin.command: dnf module disable nodejs -y
@@ -37,3 +41,8 @@
       src: /tmp/backend.zip # by default checks in ansible server
       dest: /app
       remote_src: yes
+
+  - name: install npm dependencies
+    ansible.builtin.command: npm install
+    args: #https://docs.ansible.com/ansible/latest/collections/ansible/builtin/command_module.html
+      chdir: /app #by using arg we are saying ansible to run at that place 
