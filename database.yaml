@@ -3,6 +3,10 @@
   become: yes
   vars:
     login_host: db.mohansaivenna.cloud
+  vars_prompt: #by putting we are securing password not to show in the code
+  - name: mysql_root_password
+    prompt: please enter MySQL root password
+    private: no 
   tasks:
   - name: Install MySQL Server
     ansible.builtin.dnf:
@@ -13,7 +17,7 @@
     ansible.builtin.service:
       name: mysqld
       state: started
-      enabled: yes
+      enabled: yes #lookinto out output-1 why we are adding the dependencies 
 
   - name: install python mysql dependencies
     ansible.builtin.pip:
@@ -36,7 +40,7 @@
   - name: check DB connection
     community.mysql.mysql_info:
       login_user: root
-      login_password: ExpenseApp@1
+      login_password: "{{ mysql_root_password }}"
       login_host: "{{ login_host }}"
       filter: version # this is used for checking the version
     ignore_errors: yes
@@ -44,7 +48,14 @@
 
   - name: print output
     ansible.builtin.debug:
-      msg: "Output: {{mysql_connection_output}} "
+      msg: "Output: {{mysql_connection_output}} " 
+      # check output-2 why we have written the stepup root password
+
+  - name: setup root password
+    ansible.builtin.command: "mysql_secure_installation --set-root-pass {{ mysql_root_password }}"
+    when: mysql_connection_output.failed is true # don't give {{ }} in when condition 
+    #by using the when condition from the output - msg: "Output: {{mysql_connection_output}} " we are saying when its true run this command; if it fails
+    #this command will not run
 
 #We have received an error 1st time when we run it saying that 
 #"msg": "A MySQL module is required: for Python 2.7 either PyMySQL, or MySQL-python, or for Python 3.X mysqlclient or PyMySQL.
@@ -81,3 +92,36 @@
 
 #   PLAY RECAP ************************************************************************************************************************************************************************************
 #   db.mohansaivenna.cloud     : ok=5    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=1
+
+#Error in output-2  ; 
+# "msg": "unable to connect to database using pymysql 1.1.1, we have setup the setup root password
+
+# output-2
+
+#   [ ec2-user@ip-172-31-29-113 ~/my-website-using-ansible ]$ ansible-playbook -i inventory -e ansible_user=ec2-user -e ansible_password=DevOps321 database.yaml
+
+#   PLAY [configure DB server] ********************************************************************************************************************************************************************
+
+#   TASK [Gathering Facts] ************************************************************************************************************************************************************************
+#   ok: [db.mohansaivenna.cloud]
+
+#   TASK [Install MySQL Server] *******************************************************************************************************************************************************************
+#   ok: [db.mohansaivenna.cloud]
+
+#   TASK [Start and Enable MySQL server] **********************************************************************************************************************************************************
+#   ok: [db.mohansaivenna.cloud]
+
+#   TASK [install python mysql dependencies] ******************************************************************************************************************************************************
+#   changed: [db.mohansaivenna.cloud]
+
+#   TASK [check DB connection] ********************************************************************************************************************************************************************
+#   fatal: [db.mohansaivenna.cloud]: FAILED! => {"changed": false, "msg": "unable to connect to database using pymysql 1.1.1, check login_user and login_password are correct or /root/.my.cnf has the credentials. Exception message: (1130, \"Host 'ip-172-31-82-168.ec2.internal' is not allowed to connect to this MySQL server\")"}
+#   ...ignoring
+
+#   TASK [print output] ***************************************************************************************************************************************************************************
+#   ok: [db.mohansaivenna.cloud] => {
+#       "msg": "Output: {'failed': True, 'msg': 'unable to connect to database using pymysql 1.1.1, check login_user and login_password are correct or /root/.my.cnf has the credentials. Exception message: (1130, \"Host \\'ip-172-31-82-168.ec2.internal\\' is not allowed to connect to this MySQL server\")', 'changed': False} "
+#   }
+
+#   PLAY RECAP ************************************************************************************************************************************************************************************
+#   db.mohansaivenna.cloud     : ok=6    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=1 
