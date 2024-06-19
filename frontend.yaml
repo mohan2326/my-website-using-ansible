@@ -39,3 +39,29 @@
     ansible.builtin.service:
       name: nginx
       state: restarted
+
+  # validating the sql port is # check output
+  - name: Checking the ports 
+    ansible.builtin.command: "netstat -lntp"
+    register: netstat_output
+
+  - name: Print netstat output
+    ansible.builtin.debug:
+      msg: "Output: {{ netstat_output.stdout_lines }}"
+
+  - name: ping the db server from backend
+    ansible.builtin.command: "ping -c 3 backend.mohansaivenna.cloud"
+    register: ping_command
+
+  - name: print ping output
+    ansible.builtin.debug:
+      msg: "Output: {{ ping_command }}"
+
+  - name: telnet
+    ansible.builtin.command: "telnet backend.mohansaivenna.cloud 8080"
+    register: telnet_command
+    ignore_errors: yes
+
+  - name: print telnet output
+    ansible.builtin.debug:
+      msg: "Output: {{ telnet_command }}"
