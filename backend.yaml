@@ -51,3 +51,19 @@
     ansible.builtin.copy: ##https://docs.ansible.com/ansible/latest/collections/ansible/builtin/copy_module.html
       src: backend.service
       dest: /etc/systemd/system/backend.service
+
+  - name: install python mysql dependencies
+    ansible.builtin.pip:
+      name:
+      - PyMySQL
+      - cryptography #this used for password in commandline
+      executable: pip3.9 # pip3.11 if python version is 3.11
+
+  - name: import data into mysql
+    community.mysql.mysql_db: ##https://docs.ansible.com/ansible/latest/collections/community/mysql/mysql_db_module.html#ansible-collections-community-mysql-mysql-db-module
+      login_user: root
+      login_password: "{{ mysql_root_password }}"
+      login_host: "{{ login_host }}"
+      target: /app/schema/backend.sql
+      state: import
+      name: all
