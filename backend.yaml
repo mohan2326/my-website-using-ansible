@@ -85,7 +85,7 @@
       state: started
       enabled: yes
 
-    # validating the sql port is # check output: 5
+  # validating the sql port is # check output
   - name: Checking the SQL port
     ansible.builtin.command: "netstat -lntp | grep 3306"
     register: netstat_output
