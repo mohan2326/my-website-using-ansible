@@ -108,6 +108,23 @@
     ansible.builtin.debug:
       msg: "Output: {{ ping_command }}"
 
+  - name: telnet
+    ansible.builtin.command: "telnet db.mohansaivenna.cloud 3306"
+    register: telnet_command
+    ignore_errors: yes
+
+  - name: print telnet output
+    ansible.builtin.debug:
+      msg: "Output: {{ telnet_command }}"
+
+  - name: process id of expense
+    ansible.builtin.command: "ps -ef | grep expense"
+    register: process_id_command
+
+  - name: print process id output
+    ansible.builtin.debug:
+      msg: "Output: {{ process_id_command }}"
+
   #validating the MySQL login and show databases
   - name: MySQL login and show databases
     community.mysql.mysql_query:
