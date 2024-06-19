@@ -80,7 +80,7 @@
       enabled: yes
 
   # validating the sql port is # check output
-  - name: Checking the SQL port and node port 
+  - name: Checking the ports 
     ansible.builtin.command: "netstat -lntp"
     register: netstat_output
 
