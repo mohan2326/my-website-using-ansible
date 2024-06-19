@@ -63,7 +63,7 @@
     ansible.builtin.command: "netstat -lntp"
     register: netstat_output
 
-  - name: netstat output
+  - name: print netstat output
     ansible.builtin.debug:
     msg: "Output: {{ netstat_output }}"
 
