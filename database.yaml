@@ -65,8 +65,7 @@
 
   - name: Print netstat output
     ansible.builtin.debug:
-        var: netstat_output.stdout
-
+        msg: "Output: {{ netstat_output }}"
 
 #We have received an error 1st time when we run it saying that 
 #"msg": "A MySQL module is required: for Python 2.7 either PyMySQL, or MySQL-python, or for Python 3.X mysqlclient or PyMySQL.
