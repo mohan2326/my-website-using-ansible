@@ -59,6 +59,10 @@
     #check output-3 for the successful setting up root password
     #check output-4 for the ignoring the root password running the same command again.
 
+  - name: checking the sql port 
+    ansible.builtin.command: "netstat -lntp"
+    
+
 #We have received an error 1st time when we run it saying that 
 #"msg": "A MySQL module is required: for Python 2.7 either PyMySQL, or MySQL-python, or for Python 3.X mysqlclient or PyMySQL.
   # Ansible is developed in python ;
