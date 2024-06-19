@@ -1,2 +1,8 @@
 [db]
 db.mohansaivenna.cloud #this is my route53 record name
+
+[backend]
+backend.mohansaivenna.cloud #this is my route53 record name
+
+[frontend]
+mohansaivenna.cloud #this is my route53 record name
