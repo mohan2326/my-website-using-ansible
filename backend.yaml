@@ -15,7 +15,7 @@
   - name: enable nodejs:20
     ansible.builtin.command: dnf module enable nodejs:20 -y
 
-  - name: install nodejs
+  - name: install nodejs and mysql
     ansible.builtin.dnf: # only works for Redhat family
       name: "{{ item }}"
       state: installed
@@ -87,6 +87,14 @@
   - name: Print netstat output
     ansible.builtin.debug:
       msg: "Output: {{ netstat_output.stdout_lines }}"
+
+  - name: ping the db server from backend
+    ansible.builtin.command: "ping -c 3 db.mohansaivenna.cloud"
+    register: ping_command
+
+  - name: print ping output
+    ansible.builtin.debug:
+      msg: "Output: {{ ping_command }}"
 
   #validating the MySQL login and show databases
   - name: MySQL login and show databases
