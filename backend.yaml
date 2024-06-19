@@ -21,7 +21,7 @@
       state: installed
     loop:
     - nodejs
-    - mysql
+    - mysql-server
 
   - name: Start and Enable MySQL server
     ansible.builtin.service:
