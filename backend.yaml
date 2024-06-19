@@ -23,6 +23,12 @@
     - nodejs
     - mysql
 
+  - name: Start and Enable MySQL server
+    ansible.builtin.service:
+      name: mysqld
+      state: started
+      enabled: yes
+
   - name: create expense user
     ansible.builtin.user:
       name: expense
@@ -78,3 +84,26 @@
       name: backend
       state: started
       enabled: yes
+
+    # validating the sql port is # check output: 5
+  - name: Checking the SQL port
+    ansible.builtin.command: "netstat -lntp | grep 3306"
+    register: netstat_output
+
+  - name: Print netstat output
+    ansible.builtin.debug:
+      msg: "Output: {{ netstat_output.stdout_lines }}"
+
+  #validating the MySQL login and show databases
+  - name: MySQL login and show databases
+    community.mysql.mysql_query:
+      login_user: root
+      login_password: "{{ mysql_root_password }}"
+      login_host: "{{ login_host }}"
+      query: 'SHOW DATABASES;'
+    register: mysql_showdatabases_output
+    ignore_errors: yes
+  
+  - name: Print Showdatabase output
+    ansible.builtin.debug:
+      msg: "Output: {{ mysql_showdatabases_output }}"
