@@ -15,6 +15,23 @@
       state: started
       enabled: yes
 
+  - name: install python mysql dependencies
+    ansible.builtin.pip:
+      name:
+      - PyMySQL
+      - cryptography #this used for password in commandline
+      executable: pip3.9 # pip3.11 if python version is 3.11 ; in ansible version we are using python version vast 3.9.18
+      # [ ec2-user@ip-172-31-29-113 ~/my-website-using-ansible ]$ ansible --version
+      #   ansible [core 2.14.14]
+      #     config file = /etc/ansible/ansible.cfg
+      #     configured module search path = ['/home/ec2-user/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
+      #     ansible python module location = /usr/lib/python3.9/site-packages/ansible
+      #     ansible collection location = /home/ec2-user/.ansible/collections:/usr/share/ansible/collections
+      #     executable location = /usr/bin/ansible
+      #     python version = 3.9.18 (main, Jan  4 2024, 00:00:00) [GCC 11.4.1 20230605 (Red Hat 11.4.1-2)] (/usr/bin/python3)
+      #     jinja version = 3.1.2
+      #     libyaml = True
+
   # check password is already setup or not
   - name: check DB connection
     community.mysql.mysql_info:
@@ -28,3 +45,39 @@
   - name: print output
     ansible.builtin.debug:
       msg: "Output: {{mysql_connection_output}} "
+
+#We have received an error 1st time when we run it saying that 
+#"msg": "A MySQL module is required: for Python 2.7 either PyMySQL, or MySQL-python, or for Python 3.X mysqlclient or PyMySQL.
+  # Ansible is developed in python ;
+  # now we are connecting to mysql from ansible which is developed in python;
+  # PyMySQL is a dependency for python to connect mysql servers
+  # pip --> this is for installing python dependencies
+  # https://docs.ansible.com/ansible/latest/collections/ansible/builtin/pip_module.html
+
+
+# output-1
+
+#   [ ec2-user@ip-172-31-29-113 ~/my-website-using-ansible ]$ ansible-playbook -i inventory -e ansible_user=ec2-user -e ansible_password=DevOps321 database.yaml
+
+#   PLAY [configure DB server] ********************************************************************************************************************************************************************
+
+#   TASK [Gathering Facts] ************************************************************************************************************************************************************************
+#   ok: [db.mohansaivenna.cloud]
+
+#   TASK [Install MySQL Server] *******************************************************************************************************************************************************************
+#   ok: [db.mohansaivenna.cloud]
+
+#   TASK [Start and Enable MySQL server] **********************************************************************************************************************************************************
+#   ok: [db.mohansaivenna.cloud]
+
+#   TASK [check DB connection] ********************************************************************************************************************************************************************
+#   fatal: [db.mohansaivenna.cloud]: FAILED! => {"changed": false, "msg": "A MySQL module is required: for Python 2.7 either PyMySQL, or MySQL-python, or for Python 3.X mysqlclient or PyMySQL. Consider setting ansible_python_interpreter to use the intended Python version."}
+#   ...ignoring
+
+#   TASK [print output] ***************************************************************************************************************************************************************************
+#   ok: [db.mohansaivenna.cloud] => {
+#       "msg": "Output: {'failed': True, 'msg': 'A MySQL module is required: for Python 2.7 either PyMySQL, or MySQL-python, or for Python 3.X mysqlclient or PyMySQL. Consider setting ansible_python_interpreter to use the intended Python version.', 'changed': False} "
+#   }
+
+#   PLAY RECAP ************************************************************************************************************************************************************************************
+#   db.mohansaivenna.cloud     : ok=5    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=1
