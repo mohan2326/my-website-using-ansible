@@ -46,3 +46,8 @@
     ansible.builtin.command: npm install
     args: #https://docs.ansible.com/ansible/latest/collections/ansible/builtin/command_module.html
       chdir: /app #by using arg we are saying ansible to run at that place 
+
+  - name: copy backend service
+    ansible.builtin.copy: ##https://docs.ansible.com/ansible/latest/collections/ansible/builtin/copy_module.html
+      src: backend.service
+      dest: /etc/systemd/system/backend.service
