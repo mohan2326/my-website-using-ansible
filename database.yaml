@@ -70,7 +70,7 @@
 
   #validating the MySQL login and show databases
   - name: MySQL login and show databases
-    ansible.builtin.command: "mysql -h db.mohansaivenna.cloud -uroot -p${mysql_root_password}  -e 'show databases;' "
+    ansible.builtin.command: "mysql -h {{ login_host }} -uroot -p${mysql_root_password}  -e 'show databases;' "
     register: mysql_showdatabases_output
     ignore_errors: yes
   
