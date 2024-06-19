@@ -70,13 +70,17 @@
 
   #validating the MySQL login and show databases
   - name: MySQL login and show databases
-    ansible.builtin.command: "mysql -h {{ login_host }} -uroot -p${mysql_root_password}  -e 'show databases;' "
+    community.mysql.mysql_query:
+      login_user: root
+      login_password: "{{ mysql_root_password }}"
+      login_host: "{{ login_host }}"
+      query: 'SHOW DATABASES;'
     register: mysql_showdatabases_output
     ignore_errors: yes
   
   - name: Print Showdatabase output
     ansible.builtin.debug:
-      msg: "Output: {{ mysql_showdatabases_output }}"
+      msg: "Output: {{ mysql_showdatabases_output.query_result }}"
 
 
 #We have received an error 1st time when we run it saying that 
