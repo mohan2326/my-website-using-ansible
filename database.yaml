@@ -80,7 +80,7 @@
   
   - name: Print Showdatabase output
     ansible.builtin.debug:
-      msg: "Output: {{ mysql_showdatabases_output.query_result }}"
+      msg: "Output: {{ mysql_showdatabases_output }}"
 
 
 #We have received an error 1st time when we run it saying that 
