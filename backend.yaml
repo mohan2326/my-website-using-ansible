@@ -66,6 +66,19 @@
       - cryptography #this used for password in commandline
       executable: pip3.9 # pip3.11 if python version is 3.11
 
+  - name: check DB connection
+    community.mysql.mysql_info:
+      login_user: root
+      login_password: "{{ mysql_root_password }}"
+      login_host: "{{ login_host }}"
+      filter: version # this is used for checking the version
+    ignore_errors: yes
+    register: mysql_connection_output #register is used to get the output of the command we are using
+
+  - name: print output
+    ansible.builtin.debug:
+      msg: "Output: {{mysql_connection_output}} " 
+
   - name: import data into mysql
     community.mysql.mysql_db: ##https://docs.ansible.com/ansible/latest/collections/community/mysql/mysql_db_module.html#ansible-collections-community-mysql-mysql-db-module
       login_user: root
@@ -87,7 +100,7 @@
 
   # validating the sql port is # check output
   - name: Checking the SQL port
-    ansible.builtin.command: "netstat -lntp | grep 3306"
+    ansible.builtin.command: "netstat -lntp"
     register: netstat_output
 
   - name: Print netstat output
